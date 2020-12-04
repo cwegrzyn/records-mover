@@ -9,6 +9,14 @@ import yaml
 import os
 from tempfile import NamedTemporaryFile
 
+# These arguments can be useful to add to nosetests for debugging
+# hanging tests:
+#
+#                                       '--nocapture',
+#                                       '--nologcapture',
+#                                       '--verbosity=3',
+
+
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -265,7 +273,11 @@ def run_test(args, target, parser):
             else:
                 subprocess.check_call(['with-db', 'demo-itest',
                                        "with-aws-creds", "circleci",
-                                       'nosetests', '--xunit-file=nosetests.xml', '.'],
+                                       'nosetests',
+#                                       '--nocapture',
+#                                       '--nologcapture',
+#                                       '--verbosity=3',
+                                       '--xunit-file=nosetests.xml', '.'],
                                       cwd=f"{script_dir}/records/single_db")
     elif (target == 'redshift-no-s3'):
         if (args.docker):

@@ -17,7 +17,8 @@ class RecordsLoadIntegrationTest(BaseRecordsIntegrationTest):
                         variant: DelimitedVariant,
                         hints: PartialRecordsHints = {},
                         broken: bool = False,
-                        sourcefn: Optional[Callable[[], None]] = None) -> None: # TODO fix this type
+                        # TODO fix this type
+                        sourcefn: Optional[Callable[[], None]] = None) -> None:
         redshift_with_no_bucket = (self.engine.name == 'redshift' and
                                    not self.has_scratch_s3_bucket())
         if redshift_with_no_bucket:

@@ -85,7 +85,10 @@ class RecordsUnloadIntegrationTest(BaseRecordsIntegrationTest):
         logger.info(f"Engine {self.engine.name} is OK without pandas for {format_type}/{variant}")
         return False
 
-    def unload_and_verify(self, format_type, variant, hints={}):
+    def unload_and_verify(self,
+                          format_type,
+                          variant,
+                          hints={}):
         if (not self.has_pandas()) and self.requires_pandas(format_type, variant, hints):
             logger.warning("Skipping test as we don't have Pandas to export with.")
             return

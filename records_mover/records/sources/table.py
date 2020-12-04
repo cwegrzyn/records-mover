@@ -22,6 +22,25 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+class CastDataframeTypesIterator:
+    def __init__(self,
+                 records_schema: RecordsSchema,
+                 dfs: Iterator['DataFrame']):
+        self.records_schema = records_schema
+        self.dfs = dfs
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return self.records_schema.cast_dataframe_types(next(self.dfs))
+
+    def close(self):
+        if 'close' in dir(self.dfs):
+            # Ensure database connection is closed
+            self.dfs.close()
+
+
 class TableRecordsSource(SupportsMoveToRecordsDirectory,
                          SupportsToDataframesSource):
     records_format: Optional[BaseRecordsFormat]
@@ -93,15 +112,10 @@ class TableRecordsSource(SupportsMoveToRecordsDirectory,
             pandas.read_sql(f"SELECT * FROM {quoted_table}",
                             con=db,
                             chunksize=chunksize)
-        yield DataframesRecordsSource(dfs=self.with_cast_dataframe_types(records_schema, chunks),
+        yield DataframesRecordsSource(dfs=CastDataframeTypesIterator(records_schema, chunks),
                                       records_schema=records_schema,
                                       processing_instructions=processing_instructions)
 
-    def with_cast_dataframe_types(self,
-                                  records_schema: RecordsSchema,
-                                  dfs: Iterator['DataFrame']) -> Iterator['DataFrame']:
-        for df in dfs:
-            yield records_schema.cast_dataframe_types(df)
 
     def pull_records_schema(self) -> RecordsSchema:
         return RecordsSchema.from_db_table(self.schema_name, self.table_name,

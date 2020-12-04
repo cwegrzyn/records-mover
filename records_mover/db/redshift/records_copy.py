@@ -129,6 +129,9 @@ def redshift_copy_options(unhandled_hints: Set[str],
             # (4 rows)
             #
             # analytics=>
+            #
+            # TODO: This is probably wrong for the DDMM stuff - write
+            # a test that proves that?
             redshift_options['time_format'] = 'auto'
         else:
             redshift_options['time_format'] = hints.datetimeformat

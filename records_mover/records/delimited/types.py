@@ -38,6 +38,7 @@ HintDateFormat = Literal[
 HintTimeOnlyFormat = Literal["HH12:MI AM", "HH24:MI:SS"]
 
 HintDateTimeFormatTz = Literal[
+    # TODO: And what about :SS on all the things?
     "YYYY-MM-DD HH:MI:SS",
     "YYYY-MM-DD HH:MI:SSOF",
     "YYYY-MM-DD HH24:MI:SS",

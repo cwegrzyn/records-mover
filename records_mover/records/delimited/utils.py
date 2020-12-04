@@ -1,7 +1,8 @@
 from .types import PartialRecordsHints, UntypedRecordsHints
-from .validated_records_hints import ValidatedRecordsHints
 import logging
-from typing import Iterable, Union
+from typing import Iterable, Union, TYPE_CHECKING
+if TYPE_CHECKING:
+    from .validated_records_hints import ValidatedRecordsHints
 
 
 logger = logging.getLogger(__name__)
@@ -9,8 +10,10 @@ logger = logging.getLogger(__name__)
 
 def _hint_value(hints: Union[PartialRecordsHints,
                              UntypedRecordsHints,
-                             ValidatedRecordsHints],
+                             'ValidatedRecordsHints'],
                 hint_name: str) -> object:
+    from .validated_records_hints import ValidatedRecordsHints
+
     if isinstance(hints, ValidatedRecordsHints):
         value = getattr(hints, hint_name.replace('-', '_'))
     else:
@@ -22,7 +25,7 @@ def complain_on_unhandled_hints(fail_if_dont_understand: bool,
                                 unhandled_hints: Iterable[str],
                                 hints: Union[PartialRecordsHints,
                                              UntypedRecordsHints,
-                                             ValidatedRecordsHints]) -> None:
+                                             'ValidatedRecordsHints']) -> None:
     unhandled_bindings = [f"{k}={_hint_value(hints, k)}" for k in unhandled_hints]
     unhandled_bindings_str = ", ".join(unhandled_bindings)
     if len(unhandled_bindings) > 0:
@@ -38,7 +41,7 @@ def cant_handle_hint(fail_if_cant_handle_hint: bool,
                      hint_name: str,
                      hints: Union[PartialRecordsHints,
                                   UntypedRecordsHints,
-                                  ValidatedRecordsHints]) -> None:
+                                  'ValidatedRecordsHints']) -> None:
     value = _hint_value(hints, hint_name)
     if not fail_if_cant_handle_hint:
         logger.warning("Ignoring hint {hint_name} = {hint_value}"
