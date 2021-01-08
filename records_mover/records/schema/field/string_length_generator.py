@@ -20,7 +20,11 @@ def generate_string_length(constraints: Optional[RecordsSchemaFieldStringConstra
         return len_from_statistics
 
     # safe-ish default if we can't figure out any better.
-    return 256
+    # TODO: is there a better place to handle this?
+    # TODO: maybe it makes most sense to return the actual TYPE here?
+    # TODO: seems like we should give the end-user some flexibility in what to do if we only
+    # have statistics (or have nothing) -- e.g., in a CSV file, do we want some large size? tight stats? etc
+    return None
 
 
 def string_length_from_field_details(details: Optional[Union[RecordsSchemaFieldStringConstraints,

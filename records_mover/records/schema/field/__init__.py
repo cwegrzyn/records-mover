@@ -199,6 +199,7 @@ class RecordsSchemaField:
 
     def to_numpy_dtype(self) -> Union[Type[Any], str]:
         import numpy as np
+        import pandas as pd
 
         if self.field_type == 'integer':
             int_constraints =\
@@ -208,6 +209,10 @@ class RecordsSchemaField:
             if int_constraints:
                 min_ = int_constraints.min_
                 max_ = int_constraints.max_
+
+            if not int_constraints.required:
+                logger.warning(f"Dataframe field {self.name} is nullable, so ignoring size constraints and using pd.Int64Dtype")
+                return pd.Int64Dtype()
 
             if min_ is not None and max_ is not None:
                 if min_ >= INT8_MIN and max_ <= INT8_MAX:

@@ -177,7 +177,11 @@ def field_to_sqlalchemy_type(field: 'RecordsSchemaField',
         string_statistics =\
             cast(Optional[RecordsSchemaFieldStringStatistics], field.statistics)
         n = generate_string_length(string_constraints, string_statistics, driver)
-        return sqlalchemy.sql.sqltypes.String(n)
+        if n:
+            return sqlalchemy.sql.sqltypes.String(n)
+        else:
+            logger.warning(f'No inferred string length for {field.name}, using unbounded Text type')
+            return driver.type_for_unbounded_string()
     elif field.field_type == 'date':
         return sqlalchemy.sql.sqltypes.DATE()
     elif field.field_type == 'datetime' or field.field_type == 'datetimetz':

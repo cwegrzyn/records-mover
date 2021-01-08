@@ -148,6 +148,12 @@ class RedshiftDBDriver(DBDriver):
         return super().type_for_floating_point(fp_total_bits=fp_total_bits,
                                                fp_significand_bits=fp_significand_bits)
 
+    def type_for_unbounded_string(self):
+        # This is the maximum length of a VARCHAR in Redshift (as of Jan 8th 2021)
+        # https://docs.aws.amazon.com/redshift/latest/dg/r_Character_types.html
+        # Ideally, this might use VARCHAR(MAX) but need to figure out how to do that.
+        return sqlalchemy.sql.sqltypes.String(65535)
+
     def loader(self) -> Optional[LoaderFromRecordsDirectory]:
         return self._redshift_loader
 

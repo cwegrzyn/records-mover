@@ -103,6 +103,12 @@ class DBDriver(metaclass=ABCMeta):
         return sqlalchemy.sql.sqltypes.Numeric(precision=precision,
                                                scale=scale)
 
+    def type_for_unbounded_string(self):
+        """What should we use when a string is unbounded in length?"""
+        # TODO: not sure this is right
+        # TODO: do we need to handle unicode in some more intelligent way?
+        return sqlalchemy.sql.sqltypes.Text()
+
     @abstractmethod
     def loader(self) -> Optional[LoaderFromRecordsDirectory]:
         ...
