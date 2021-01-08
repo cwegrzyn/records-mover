@@ -210,7 +210,7 @@ class RecordsSchemaField:
                 min_ = int_constraints.min_
                 max_ = int_constraints.max_
 
-            if not int_constraints.required:
+            if not (int_constraints and int_constraints.required):
                 logger.warning(f"Dataframe field {self.name} is nullable, so ignoring size constraints and using pd.Int64Dtype")
                 return pd.Int64Dtype()
 

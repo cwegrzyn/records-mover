@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 def generate_string_length(constraints: Optional[RecordsSchemaFieldStringConstraints],
                            statistics: Optional[RecordsSchemaFieldStringStatistics],
-                           driver: Optional['DBDriver']) -> int:
+                           driver: Optional['DBDriver']) -> Optional[int]:
     len_from_constraints = string_length_from_field_details(constraints, driver)
     len_from_statistics = string_length_from_field_details(statistics, driver)
 
