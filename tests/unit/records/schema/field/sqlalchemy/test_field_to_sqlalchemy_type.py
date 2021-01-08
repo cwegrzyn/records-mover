@@ -114,6 +114,27 @@ class TestSqlAlchemyFieldToSqlalchemyType(unittest.TestCase):
         self.assertEqual(type(out), sqlalchemy.sql.sqltypes.String)
         self.assertEqual(out.length, mock_n)
 
+    @patch('records_mover.records.schema.field.sqlalchemy.generate_string_length')
+    def test_string_when_no_length_inferred(self,
+                                            mock_generate_string_length):
+        mock_field = Mock(name='field')
+        mock_driver = Mock(name='driver')
+        driver_type_for_unbounded = mock_driver.type_for_unbounded_string.return_value
+
+        mock_field.field_type = 'string'
+        mock_field.constraints = Mock(name='constraints', spec=RecordsSchemaFieldStringConstraints)
+        mock_field.statistics = Mock(name='statistics', spec=RecordsSchemaFieldStringStatistics)
+        mock_string_constraints = mock_field.constraints
+        mock_string_statistics = mock_field.statistics
+        mock_generate_string_length.return_value = None
+
+        out = field_to_sqlalchemy_type(field=mock_field,
+                                       driver=mock_driver)
+        mock_generate_string_length.assert_called_with(mock_string_constraints,
+                                                       mock_string_statistics,
+                                                       mock_driver)
+        self.assertEqual(out, driver_type_for_unbounded)
+
     def test_date(self):
         mock_field = Mock(name='field')
         mock_driver = Mock(name='driver')

@@ -50,7 +50,7 @@ class TestStringLengthGenerator(unittest.TestCase):
                 'constraints_max_length_chars': None,
                 'statistics_max_length_bytes': None,
                 'statistics_max_length_chars': None,
-                'expected_string_length': 256
+                'expected_string_length': None
             },
             {
                 'driver': True,
@@ -87,14 +87,6 @@ class TestStringLengthGenerator(unittest.TestCase):
                 'statistics_max_length_bytes': None,
                 'statistics_max_length_chars': 123,
                 'expected_string_length': 492
-            },
-            {
-                'driver': False,
-                'constraints_max_length_bytes': None,
-                'constraints_max_length_chars': None,
-                'statistics_max_length_bytes': None,
-                'statistics_max_length_chars': None,
-                'expected_string_length': 256
             },
             {
                 'driver': False,
