@@ -69,11 +69,13 @@ class FileobjsSource(SupportsMoveToRecordsDirectory,
                 # let's assume 'csv'.
                 records_format = DelimitedRecordsFormat(variant='csv',
                                                         hints=inferred_hints)
+                logger.debug(f"Inferred records format {records_format}")
             if records_schema is None:
                 records_schema =\
                     RecordsSchema.from_fileobjs(list(target_names_to_input_fileobjs.values()),
                                                 records_format=records_format,
                                                 processing_instructions=processing_instructions)
+                logger.debug(f"Inferred records schema {records_schema}")
 
             yield FileobjsSource(target_names_to_input_fileobjs=target_names_to_input_fileobjs,
                                  records_format=records_format,
@@ -120,7 +122,6 @@ class FileobjsSource(SupportsMoveToRecordsDirectory,
                              processing_instructions: ProcessingInstructions) \
             -> Iterator['DataframesRecordsSource']:
         import pandas as pd
-        from records_mover.pandas import convert_dtypes
         from records_mover.records.sources.dataframes import DataframesRecordsSource  # noqa
         from records_mover.records.pandas import pandas_read_csv_options
 
@@ -162,7 +163,8 @@ class FileobjsSource(SupportsMoveToRecordsDirectory,
                                   **options)
             except pd.errors.EmptyDataError:
                 dfs = [self.records_schema.to_empty_dataframe()]
-            yield DataframesRecordsSource(dfs=(convert_dtypes(df) for df in dfs),
+            yield DataframesRecordsSource(dfs=(self.records_schema.cast_dataframe_types(df)
+                                               for df in dfs),
                                           records_schema=self.records_schema)
         finally:
             if text_fileobj is not None:

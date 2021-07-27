@@ -61,6 +61,9 @@ class RecordsSchema:
         types = {field.name: field.field_type for field in self.fields}
         return f"RecordsSchema(types={types})"
 
+    def __repr__(self) -> str:
+        return str(self)
+
     @staticmethod
     def from_db_table(schema_name: str, table_name: str, driver: 'DBDriver') -> 'RecordsSchema':
         from .sqlalchemy import schema_from_db_table
@@ -164,6 +167,7 @@ class RecordsSchema:
 
             df = purge_unnamed_unused_columns(df)
             df = convert_dtypes(df)
+            logger.debug(f"Pandas inferred: {df.dtypes}")
             schema = RecordsSchema.from_dataframe(df, processing_instructions,
                                                   include_index=False)
 

@@ -11,8 +11,10 @@ from records_mover.records.cli import main
 @patch('records_mover.records.cli.JobConfigSchemaAsArgsParser')
 @patch('records_mover.records.cli.arguments_output_to_config')
 @patch('records_mover.session.get_config')
+@patch('records_mover.records.cli.set_stream_logging')
 class TestCLI(unittest.TestCase):
     def test_main(self,
+                  mock_set_stream_logging,
                   mock_get_config,
                   mock_arguments_output_to_config,
                   mock_JobConfigSchemaAsArgsParser,

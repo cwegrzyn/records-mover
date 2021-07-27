@@ -24,21 +24,23 @@ citypecoverage: typecoverage
 	@git status --porcelain metrics/mypy_high_water_mark
 	@test -z "$$(git status --porcelain metrics/mypy_high_water_mark)"
 
+TESTCOMMAND = ENV=test nosetests --cover-package=records_mover --cover-erase --with-coverage --with-xunit --cover-html --cover-xml --cover-inclusive $(TESTOPTIONS)
+
 unit:
-	ENV=test nosetests --cover-package=records_mover --cover-erase --with-coverage --with-xunit --cover-html --cover-xml --cover-inclusive tests/unit
+	$(TESTCOMMAND) --cover-erase tests/unit
 	mv .coverage .coverage-unit
 
 component:
-	ENV=test nosetests --cover-package=records_mover --with-coverage --with-xunit --cover-html --cover-xml --cover-inclusive tests/component
+	$(TESTCOMMAND) --cover-erase tests/component
 	mv .coverage .coverage-component
 
-test: unit component
-	coverage combine .coverage-unit .coverage-component # https://stackoverflow.com/questions/7352319/nosetests-combined-coverage
+test:
+	$(TESTCOMMAND) --cover-erase tests/unit tests/component
 	coverage html --directory=cover
 	coverage xml
 
 ciunit:
-	ENV=test nosetests --cover-package=records_mover --cover-erase --with-coverage --with-xunit --cover-html --cover-xml --cover-inclusive --xunit-file=test-reports/junit.xml tests/unit
+	$(TESTCOMMAND) --xunit-file=test-reports/junit.xml tests/unit
 	mv .coverage .coverage-unit
 
 cicomponent:
@@ -86,3 +88,9 @@ package:
 
 docker:
 	docker build -f tests/integration/Dockerfile --progress=plain -t records-mover .
+
+ITESTTARGETS := all
+
+itest:
+	cd tests/integration; \
+	GCP_PROJECT=bluelabs-tools-dev ./itest $(ITESTTARGETS)

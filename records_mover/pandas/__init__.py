@@ -47,7 +47,7 @@ def convert_dtypes(df: 'DataFrame') -> 'DataFrame':
     If Pandas <1.0 is being used, logs a warning message and proceeds
     with the raw dtypes.
     """
-    if 'convert_dtypes' in dir(df):
+    if 'convert_dtypes' in dir(df) and not df.empty:
         # Allow nullable integers to be represented
         df = df.convert_dtypes()
     else:

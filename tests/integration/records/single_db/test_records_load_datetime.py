@@ -38,12 +38,16 @@ class RecordsLoadDatetimeIntegrationTest(BaseRecordsIntegrationTest):
         sources = self.records.sources
         sample = create_sample(format_string)
         logger.info(f'Testing date/time load with {sample} from format {format_string}')
-        fileobj = io.BytesIO(sample.encode('utf-8'))
+        fileobj = io.BytesIO()
+        fileobj.write(column_name.encode('utf-8'))
+        fileobj.write(b'\n')
+        fileobj.write(sample.encode('utf-8'))
+        fileobj.write(b'\n')
         records_format = RecordsFormat(variant=variant_for_db[self.engine.name],
                                        hints={
                                            hint_name: format_string,  # type: ignore
                                            'compression': None,
-                                           'header-row': False,
+                                           'header-row': True,
                                            **addl_hints,
                                        })
         source = sources.fileobjs(target_names_to_input_fileobjs={
